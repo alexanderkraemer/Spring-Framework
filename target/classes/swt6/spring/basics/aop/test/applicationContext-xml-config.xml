@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd">
+
+
+	<bean id="entityManagerFactory"
+		  class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="packagesToScan" value="swt6.spring.worklog.domain" />
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
+		</property>
+		<property name="jpaProperties">
+			<props>
+				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.format_sql">false</prop>
+				<prop key="hibernate.hbm2ddl.auto">create</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="workLog" class="swt6.spring.basics.aop.logic.WorkLogImpl"/>
+	
+	<bean id="traceAdvice" class="swt6.spring.basics.aop.advice.TraceAdvice"/>
+
+	<bean id="jpaInterceptor" class="swt6.util.advice.JpaInterceptor">
+		<property name="entityManagerFactory" ref="entityManagerFactory"/>
+	</bean>
+
+	<aop:config>
+		<aop:aspect id="traceAspect" ref="traceAdvice">
+			<aop:pointcut expression="execution(public * swt6.spring.basics.aop.logic..*find*(..))" id="findMethods"/>
+			
+			<aop:pointcut expression="execution(public * swt6.spring.basics.aop.logic..*find*ById*(..))" id="findByIdMethods"/>
+			
+			<aop:before pointcut-ref="findMethods" method="traceBefore"/>
+			<aop:after-returning pointcut-ref="findMethods" method="traceAfter"/>
+			<aop:around method="traceAround" pointcut-ref="findByIdMethods"/>
+			<aop:after-throwing method="traceException" pointcut-ref="findMethods" throwing="exception"/>
+			
+			<aop:declare-parents 	types-matching="swt6.spring.basics..*" 
+									implement-interface="swt6.spring.basics.aop.advice.TraceOptions"
+									default-impl="swt6.spring.basics.aop.advice.TraceOptionsDefaultImpl"/>
+		</aop:aspect>
+	</aop:config>
+
+	<aop:config>
+		<aop:aspect id="jpaInterceptor" ref="jpaInterceptor">
+			<aop:around pointcut="execution(public * swt6.spring.worklog.ui.UIProcessComponent.*(..))" method="holdEntityManager"/>
+		</aop:aspect>
+	</aop:config>
+</beans>
