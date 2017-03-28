@@ -16,6 +16,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Component
+@Transactional
 public class InsertTestData {
 
     @Autowired
@@ -46,7 +47,7 @@ public class InsertTestData {
         employeeRepo.saveAndFlush(te4);
         employeeRepo.saveAndFlush(te5);
         employeeRepo.saveAndFlush(te6);
-/*
+
         Project p1 = new Project("project1", pe1);
         Project p2 = new Project("project2", pe2);
         Project p3 = new Project("project3", pe3);
@@ -54,24 +55,27 @@ public class InsertTestData {
         Project p5 = new Project("project5", te5);
         Project p6 = new Project("project6", te6);
 
-        fc.addEmployeeToProject(pe1, p1);
-        fc.addEmployeeToProject(pe2, p1);
-        fc.addEmployeeToProject(pe3, p1);
+        p1.addEmployee(p1, pe1);
+        p1.addEmployee(p2, pe2);
+        p1.addEmployee(p3, pe3);
+        p1.addEmployee(p4, te4);
+        p1.addEmployee(p5, te5);
+        p1.addEmployee(p6, te6);
 
-        fc.syncProject(p1);
-        fc.syncProject(p2);
-        fc.syncProject(p3);
-        fc.syncProject(p4);
-        fc.syncProject(p5);
-        fc.syncProject(p6);
+        projectRepo.saveAndFlush(p1);
+        projectRepo.saveAndFlush(p2);
+        projectRepo.saveAndFlush(p3);
+        projectRepo.saveAndFlush(p4);
+        projectRepo.saveAndFlush(p5);
+        projectRepo.saveAndFlush(p6);
 
         List<Issue> issues = new LinkedList<>();
-        Issue i1 = new Issue(State.OPEN, Priority.HIGH, new Time(3, 10, 0), 10.0, p1);
-        Issue i2 = new Issue(State.NEW, Priority.LOW, new Time(6, 0, 0), 50.0, p1);
-        Issue i3 = new Issue(State.CLOSED, Priority.NORMAL, new Time(2, 10, 0), 40.0, p1);
-        Issue i4 = new Issue(State.REJECTED, Priority.HIGH, new Time(1, 20, 0), 20.0, p1);
-        Issue i5 = new Issue(State.NEW, Priority.NORMAL, new Time(1, 30, 0), 90.0, p1);
-        Issue i6 = new Issue(State.OPEN, Priority.LOW, new Time(5, 50, 0), 80.0, p1);
+        Issue i1 = new Issue(State.OPEN, Priority.HIGH, new Time(3, 10, 0), 0.1, p1);
+        Issue i2 = new Issue(State.NEW, Priority.LOW, new Time(6, 0, 0), 0.5, p1);
+        Issue i3 = new Issue(State.CLOSED, Priority.NORMAL, new Time(2, 10, 0), 0.4, p1);
+        Issue i4 = new Issue(State.REJECTED, Priority.HIGH, new Time(1, 20, 0), 0.2, p1);
+        Issue i5 = new Issue(State.NEW, Priority.NORMAL, new Time(1, 30, 0), 0.9, p1);
+        Issue i6 = new Issue(State.OPEN, Priority.LOW, new Time(5, 50, 0), 0.8, p1);
 
         i1.setEmployee(pe1);
         i2.setEmployee(pe2);
@@ -90,7 +94,7 @@ public class InsertTestData {
 
         for(Issue issue: issues) {
             try {
-                fc.syncIssue(issue);
+                issueRepo.saveAndFlush(issue);
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
@@ -103,13 +107,12 @@ public class InsertTestData {
         Phase ph5 = new Phase("phase5");
         Phase ph6 = new Phase("phase6");
 
-        fc.addPhase(ph1);
-        fc.addPhase(ph2);
-        fc.addPhase(ph3);
-        fc.addPhase(ph4);
-        fc.addPhase(ph5);
-        fc.addPhase(ph6);
-
+        phaseRepo.saveAndFlush(ph1);
+        phaseRepo.saveAndFlush(ph2);
+        phaseRepo.saveAndFlush(ph3);
+        phaseRepo.saveAndFlush(ph4);
+        phaseRepo.saveAndFlush(ph5);
+        phaseRepo.saveAndFlush(ph6);
 
         LogbookEntry e1 = new LogbookEntry("activity1",
                 //new Date(2017, 1, 1),
@@ -160,15 +163,15 @@ public class InsertTestData {
 
                 te6, ph6, i6);
 
-        fc.syncLogbookEntry(e1);
-        fc.syncLogbookEntry(e2);
-        fc.syncLogbookEntry(e3);
-        fc.syncLogbookEntry(e4);
-        fc.syncLogbookEntry(e5);
-        fc.syncLogbookEntry(e6);
+        logbookEntryRepo.saveAndFlush(e1);
+        logbookEntryRepo.saveAndFlush(e2);
+        logbookEntryRepo.saveAndFlush(e3);
+        logbookEntryRepo.saveAndFlush(e4);
+        logbookEntryRepo.saveAndFlush(e5);
+        logbookEntryRepo.saveAndFlush(e6);
 
         System.out.println("finished...");
-        */
+
     }
 
 }

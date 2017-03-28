@@ -1,14 +1,15 @@
 package swt6.spring.ui;
 
-import swt6.spring.domain.Issue;
-import swt6.spring.domain.LogbookEntry;
-import swt6.spring.domain.Project;
-import swt6.spring.domain.State;
+import swt6.spring.domain.*;
+
+import java.sql.Time;
+import java.util.List;
+import java.util.Map;
 
 public interface UIProcessFacade {
     void listEmployees();
 
-    void createProject(Project p);
+    Project createProject(Project p);
 
     void putEmployeeToProject(Long empl, Long project);
 
@@ -16,11 +17,15 @@ public interface UIProcessFacade {
 
     void listEmployeesFromProject(Long project);
 
-    void createIssue(Issue issue);
+    Issue createIssue(Issue issue);
 
     void updateIssue(Long id, Issue issue);
 
     void putIssueToProject(Long issue, Long project);
+
+    void neededTimePerEmployee(Long project);
+
+    void getIssuesForEmployee(Long employee, State state);
 
     void listIssuesFromProject(Long project);
 
@@ -32,7 +37,7 @@ public interface UIProcessFacade {
 
     void listWorkedTimeByProject(Long project);
 
-    void addLogbookEntry(LogbookEntry entry);
+    LogbookEntry addLogbookEntry(LogbookEntry entry);
 
     void listPhases();
 }

@@ -1,7 +1,9 @@
 package swt6.spring.logic;
 
+import java.sql.Time;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,12 +30,15 @@ public class WorkLogImpl implements WorkLogFacade {
     private IssueRepository issueRepo;
     @Autowired
     private PhaseRepository phaseRepo;
-    @Autowired
-    private InsertTestData id;
 
     @Override
     public Project syncProject(Project project) {
         return projectRepo.saveAndFlush(project);
+    }
+
+    @Override
+    public List<Issue> getIssuesForEmployee(Employee employee, State state) {
+        return employeeRepo.getIssuesForEmployee(employee, state);
     }
 
     @Override
@@ -57,15 +62,14 @@ public class WorkLogImpl implements WorkLogFacade {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = false)
     public Employee findEmployeeById(Long id) {
         return employeeRepo.findOne(id);
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = false)
     public List<Employee> findAllEmployees() {
-        id.insert();
         return employeeRepo.findAll();
     }
 
@@ -113,6 +117,16 @@ public class WorkLogImpl implements WorkLogFacade {
     }
 
     @Override
+    public List<Issue> getIssuesWithState(Project project, State state) {
+        return employeeRepo.getIssuesWithState(project, state);
+    }
+
+    @Override
+    public Map<Employee, Time> neededTimePerEmployee(Project project) {
+        return employeeRepo.neededTimePerEmployee(project);
+    }
+
+    @Override
     public List<Issue> findAllIssues() {
         return issueRepo.findAll();
     }
@@ -124,7 +138,7 @@ public class WorkLogImpl implements WorkLogFacade {
 
     @Override
     public LogbookEntry addLogbookEntry(LogbookEntry entry) {
-        return logbookEntryRepo.save(entry);
+        return logbookEntryRepo.saveAndFlush(entry);
     }
 
     @Override
@@ -133,7 +147,7 @@ public class WorkLogImpl implements WorkLogFacade {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public LogbookEntry findLogbookEntryById(Long id) {
         return logbookEntryRepo.findOne(id);
     }

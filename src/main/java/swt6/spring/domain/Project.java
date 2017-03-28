@@ -1,5 +1,7 @@
 package swt6.spring.domain;
 
+import com.sun.istack.internal.Nullable;
+
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -15,10 +17,10 @@ public class Project implements Serializable {
 
     private String name;
 
-    @ManyToMany(mappedBy = "projects")
+    @ManyToMany(mappedBy = "projects", cascade = CascadeType.ALL)
     private Set<Employee> employees = new HashSet<>();
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private Employee leader;
 
     public Project() {

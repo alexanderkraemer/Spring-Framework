@@ -11,12 +11,6 @@ import org.springframework.stereotype.Repository;
 import swt6.spring.domain.Employee;
 
 @Repository
-public interface EmployeeRepository extends JpaRepository<Employee, Long> {
-    Employee findByLastName(@Param("name") String lastName);
+public interface EmployeeRepository extends JpaRepository<Employee, Long>, EmployeeRepositoryCustom {
 
-    @Query("select e from Employee e where e.lastName like %:substr%")
-    List<Employee> findByLastNameContaining(@Param("substr") String substr);
-
-    @Query("select e from Employee e where e.dateOfBirth < :date")
-    List<Employee> findByOlderThan(@Param("date") Date date);
 }

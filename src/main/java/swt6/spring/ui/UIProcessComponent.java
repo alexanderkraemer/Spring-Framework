@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Component;
+import sun.rmi.runtime.Log;
 import swt6.spring.domain.*;
 import swt6.spring.logic.WorkLogFacade;
 
@@ -25,8 +26,9 @@ public class UIProcessComponent implements UIProcessFacade {
     }
 
     @Override
-    public void createProject(Project p) {
+    public Project createProject(Project p) {
         fc.syncProject(p);
+        return p;
     }
 
     @Override
@@ -45,12 +47,13 @@ public class UIProcessComponent implements UIProcessFacade {
     }
 
     @Override
-    public void createIssue(Issue issue) {
+    public Issue createIssue(Issue issue) {
         try {
             fc.syncIssue(issue);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+        return issue;
     }
 
     @Override
@@ -88,7 +91,7 @@ public class UIProcessComponent implements UIProcessFacade {
 
         issueSet.forEach(System.out::println);
     }
-
+/*
     @Override
     public void listIssuesFromProjectByStatus(Long project, State state) {
         Set<Issue> issueSet = new HashSet<>();
@@ -100,6 +103,23 @@ public class UIProcessComponent implements UIProcessFacade {
         });
 
         issueSet.forEach(System.out::println);
+    }
+*/
+
+    @Override
+    public void getIssuesForEmployee(Long employee, State state) {
+        fc.getIssuesForEmployee(fc.findEmployeeById(employee), state).forEach(System.out::println);
+    }
+
+    @Override
+    public void neededTimePerEmployee(Long project) {
+        Map<Employee, Time> map = fc.neededTimePerEmployee(fc.findProjectById(project));
+        map.forEach((k,v) -> System.out.println(k + " - " + v));
+    }
+
+    @Override
+    public void listIssuesFromProjectByStatus(Long project, State state) {
+        fc.getIssuesWithState(fc.findProjectById(project), state).forEach(System.out::println);
     }
 
     @Override
@@ -147,19 +167,17 @@ public class UIProcessComponent implements UIProcessFacade {
             Long usedTime = 0L;
             Long neededTime = 0L;
             Long estimatedTime = 0L;
-            Double percent = 0.0;
             for(Issue i: v) {
-                Long seconds = (long)i.getEstimatedTime().getSeconds() + i.getEstimatedTime().getMinutes()*60 + i.getEstimatedTime().getHours() * 3600;
+                Long seconds = i.getEstimatedTime().getTime();
                 usedTime += Math.round(seconds * i.getFinished());
                 neededTime += Math.round(seconds * (1-i.getFinished()));
                 estimatedTime += Math.round(seconds);
-                percent += i.getFinished();
             }
-            percent = percent/v.size();
-            System.out.println("Estimated time: " + this.timeFromMillis(estimatedTime*1000));
-            System.out.println("Finished in Percentage: " + percent*100 + "%");
-            System.out.println("Already used time: " + this.timeFromMillis(usedTime*1000));
-            System.out.println("Still needed time: " + this.timeFromMillis(neededTime*1000));
+            Float percent = ((float)usedTime)/estimatedTime;
+            System.out.println("Estimated time: " + this.timeFromMillis(estimatedTime));
+            System.out.println("Finished in Percentage: " + percent*100  + "%");
+            System.out.println("Already used time: " + this.timeFromMillis(usedTime));
+            System.out.println("Still needed time: " + this.timeFromMillis(neededTime));
         });
     }
 
@@ -173,8 +191,9 @@ public class UIProcessComponent implements UIProcessFacade {
     }
 
     @Override
-    public void addLogbookEntry(LogbookEntry entry) {
+    public LogbookEntry addLogbookEntry(LogbookEntry entry) {
         fc.addLogbookEntry(entry);
+        return entry;
     }
 
     @Override

@@ -26,7 +26,7 @@ public class Employee implements Serializable {
     @OneToMany(mappedBy = "employee", cascade = {CascadeType.PERSIST}, fetch = FetchType.LAZY)
     private Set<LogbookEntry> logbookEntries = new HashSet<>();
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "ProjectEmployee", joinColumns = @JoinColumn(name = "employeeId"), inverseJoinColumns = @JoinColumn(name = "projectId"))
     private Set<Project> projects = new HashSet<>();
 

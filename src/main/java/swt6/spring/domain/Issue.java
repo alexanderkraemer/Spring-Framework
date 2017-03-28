@@ -103,6 +103,6 @@ public class Issue implements Serializable{
     }
 
     public String toString(){
-        return "Issue " + this.getId() + ": [" + getZustand() + "] Finished Status: " + getFinished() + "%; Estimated Time: " + getEstimatedTime();
+        return "Issue " + this.getId() + ": [" + getZustand() + "] Finished Status: " + getFinished() * 100 + "%; Estimated Time: " + getEstimatedTime();
     }
 }
