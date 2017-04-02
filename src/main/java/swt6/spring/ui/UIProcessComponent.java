@@ -198,7 +198,7 @@ public class UIProcessComponent implements UIProcessFacade {
 
     @Override
     public void listPhases() {
-        fc.findAllLogbookEntry().forEach(System.out::println);
+        fc.findAllPhases().forEach(System.out::println);
     }
 
     private Time timeFromMillis(long milliseconds) {

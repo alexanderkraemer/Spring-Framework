@@ -4,6 +4,8 @@
 # Mongo Explorer plugin:
 .idea/*
 
+data/*
+
 ## File-based project format:
 *.iws
 
